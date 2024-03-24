@@ -1,32 +1,64 @@
 import random
 
+# boardsクラスの作成
 class boards:
 
     def __init__(self):
-        self.frame = "×"
-        self.air = "."
-        self.status = {0:"○", 1:"●"}
-        self.bord = [[self.frame if i in [0,9] or j in [0,9] else self.air for i in range(10)] for j in range(10)]
-        self.turn = 0
-        self.dir = [
-            [1,-1],
-            [1,0],
-            [1,1],
-            [0,1],
-            [-1,1],
-            [-1,0],
-            [-1,-1],
-            [0,-1]
-        ]
+        '''
+        イニシャライザの設定
 
-        self.bord[4][4] = self.status[0]
-        self.bord[5][5] = self.status[0]
-        self.bord[5][4] = self.status[1]
-        self.bord[4][5] = self.status[1]
+        self.frame : str
+            - 枠、設置不可の場所
+            - 初期値："×"
+        
+        self.air : str
+            - 駒が置かれていない場所
+            - 初期値："."
+        
+        self.status : dict
+            - 駒の種類を保持
+            - 初期値：0を"○"、1を"●"、とした辞書
+
+        self.bord : list
+            - 盤面データを保持
+            - 初期値：以下のような二次元配列、サイズは10x10
+            × × × × × × × × × ×
+            × . . . . . . . . ×
+            × . . . . . . . . ×
+            × . . . . . . . . ×
+            × . . . . . . . . ×
+            × . . . . . . . . ×
+            × . . . . . . . . ×
+            × . . . . . . . . ×
+            × . . . . . . . . ×
+            × × × × × × × × × ×
+        
+        self.turn : int
+            - ターンを保持
+            - 初期値：0を設定(0か1のint型)
+        
+        self.dir : list
+            - 探索方向を保持
+            - 初期値：8方向の単位ベクトルを用意
+        '''
+
+        # 中心4マスに白黒それぞれのコマを2つずつ対角で配置
+        
 
     def view_bord(self):
         '''
         盤面を表示する関数
+        '''
+        '''
+          0 1 2 3 4 5 6 7
+        0 . . . . . . . .
+        1 . . . . . . . .
+        2 . . . . . . . .
+        3 . . . ○ ● . . .
+        4 . . . ● ○ . . .
+        5 . . . . . . . .
+        6 . . . . . . . .
+        7 . . . . . . . .
         '''
         print(" ", " ".join(map(str, range(8))))
         for i, bo in enumerate(self.bord[1:9]):
