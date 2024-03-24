@@ -145,7 +145,7 @@ class boards:
         print(f"黒{bk}、白{wh}により、"+t)
 
 
-def main(): 
+def main(player:bool=True): 
 
     error_message = ""
     b = boards()
@@ -159,6 +159,14 @@ def main():
         if not exists:
             b.screen_win_or_lose(bk,wh)
             break
+
+        if player and b.turn:
+            if hint:
+                b.set(b.turn,hint[-1][1]+1,hint[-1][0]+1)
+                b.swap(hint[-1][1]+1,hint[-1][0]+1)
+                b.turn = not b.turn
+                error_message = ""
+                continue
 
         if not hint:
             error_message="置くことができません、再び"
