@@ -1,5 +1,3 @@
-from random import randint
-
 class hole:
     def __init__(self,pos:str,num:int,goal:bool) -> None:
         self.pos = pos
