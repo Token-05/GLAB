@@ -1,67 +1,53 @@
 import random
 
-# boardsクラスの作成
 class boards:
 
     def __init__(self):
-        '''
-        イニシャライザの設定
 
-        self.frame : str
-            - 枠、設置不可の場所
-            - 初期値："×"
-        
-        self.air : str
-            - 駒が置かれていない場所
-            - 初期値："."
-        
-        self.status : dict
-            - 駒の種類を保持
-            - 初期値：0を"○"、1を"●"、とした辞書
+        self.frame = "×"
+        self.air = "."
+        self.pieces_status = {0:"○", 1:"●"}
 
-        self.bord : list
-            - 盤面データを保持
-            - 初期値：以下のような二次元配列、サイズは10x10
-            × × × × × × × × × ×
-            × . . . . . . . . ×
-            × . . . . . . . . ×
-            × . . . . . . . . ×
-            × . . . . . . . . ×
-            × . . . . . . . . ×
-            × . . . . . . . . ×
-            × . . . . . . . . ×
-            × . . . . . . . . ×
-            × × × × × × × × × ×
-        
-        self.turn : int
-            - ターンを保持
-            - 初期値：0を設定(0か1のint型)
-        
-        self.dir : list
-            - 探索方向を保持
-            - 初期値：8方向の単位ベクトルを用意
-        '''
+        """
+        修正前
+        self.board = [[self.frame if i in [0,9] or j in [0,9] else self.air for i in range(10)] for j in range(10)]
 
-        # 中心4マスに白黒それぞれのコマを2つずつ対角で配置
-        
+        修正後
+        ↓
+        """
+        self.board = []
+        for i in range(10):
+            tentative = []
+            for j in range(10):
+                if i in [0,9] or j in [0,9]:
+                    tentative.append(self.frame)
+                else:
+                    tentative.append(self.air)
+            self.board.append(tentative)
+
+        self.turn = 0
+        self.dir = [
+            [1,-1],
+            [1,0],
+            [1,1],
+            [0,1],
+            [-1,1],
+            [-1,0],
+            [-1,-1],
+            [0,-1]
+        ]
+
+        self.board[4][4] = self.pieces_status[0]
+        self.board[5][5] = self.pieces_status[0]
+        self.board[5][4] = self.pieces_status[1]
+        self.board[4][5] = self.pieces_status[1]
 
     def view_bord(self):
         '''
         盤面を表示する関数
         '''
-        '''
-          0 1 2 3 4 5 6 7
-        0 . . . . . . . .
-        1 . . . . . . . .
-        2 . . . . . . . .
-        3 . . . ○ ● . . .
-        4 . . . ● ○ . . .
-        5 . . . . . . . .
-        6 . . . . . . . .
-        7 . . . . . . . .
-        '''
         print(" ", " ".join(map(str, range(8))))
-        for i, bo in enumerate(self.bord[1:9]):
+        for i, bo in enumerate(self.board[1:9]):
             print(i, " ".join(bo[1:9]))
 
     def set(self,koma:int,x:int,y:int):
@@ -73,7 +59,7 @@ class boards:
         y : y座標
         ---
         '''
-        self.bord[x][y] = self.status[koma]
+        self.board[x][y] = self.pieces_status[koma]
     
     def check_st_line(self,x:int,y:int,d:int,swapable:list):
         '''
@@ -86,16 +72,15 @@ class boards:
         ---
         swapable : ひっくり返し可能な座標
         '''
-        next = self.bord[x][y]
+        next = self.board[x][y]
         if next not in ("×","."):
-            if self.status[self.turn] == next:
+            if self.pieces_status[self.turn] == next:
                 return swapable
             else:
                 swapable.append((x,y))
                 self.check_st_line(x+self.dir[d][0],y+self.dir[d][1],d,swapable)
         else: 
             swapable.clear()
-            return []
         return swapable
 
     def check_radiation(self,x:int,y:int):
@@ -135,7 +120,7 @@ class boards:
         0 : 配置不可能
         '''
         swapable_list = self.check_radiation(x,y)
-        return 1 if swapable_list and self.bord[x][y] is self.air else 0
+        return 1 if swapable_list and self.board[x][y] is self.air else 0
     
     def check_bord(self):
         '''
@@ -150,12 +135,12 @@ class boards:
         hint,air_exists = [],False
         white, black = 0, 0
 
-        for i,col in enumerate(self.bord[1:9]):
+        for i,col in enumerate(self.board[1:9]):
             for j,d in enumerate(col[1:9]):
                 if self.setable(i+1,j+1) : hint.append((j,i))
                 if d == self.air : air_exists = True
-                elif d == self.status[0] : black+=1
-                elif d == self.status[1] : white+=1
+                elif d == self.pieces_status[0] : black+=1
+                elif d == self.pieces_status[1] : white+=1
 
         random.shuffle(hint)
         return hint,air_exists,black,white
@@ -169,9 +154,9 @@ class boards:
         ---
         '''
         if bk > wh:
-            t = f"「{self.status[0]}」の勝利でした"
+            t = f"「{self.pieces_status[0]}」の勝利でした"
         elif bk < wh:
-            t = f"「{self.status[1]}」の勝利でした"
+            t = f"「{self.pieces_status[1]}」の勝利でした"
         else :
             t = "両者引き分けでした"
         print(f"黒{bk}、白{wh}により、"+t)
@@ -209,7 +194,7 @@ def main(player:bool=True):
                 break
             continue
 
-        print(f'{error_message}「{b.status[b.turn]}」の番です')
+        print(f'{error_message}「{b.pieces_status[b.turn]}」の番です')
         print("ヒント：",*hint)
         i = list(map(int, input('「横 縦」のように入力してください：').split()))
         print("\n\n")
