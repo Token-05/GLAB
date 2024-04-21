@@ -78,7 +78,7 @@ def main():
 
         if not m.turn:
             choosen = int(input("A：どこから石を取りますか(1〜6)："))-1
-            if choosen < 0 or choosen > 5:
+            if choosen < 0 or choosen > 5 or m.board[choosen].num == 0:
                 continue
         else :
             choosen = m.CPU(range(7,13))

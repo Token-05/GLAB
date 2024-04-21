@@ -63,7 +63,6 @@ class boards:
                 self.check_st_line(x+self.dir[d][0],y+self.dir[d][1],d,swapable)
         else: 
             swapable.clear()
-            return []
         return swapable
 
     def check_radiation(self,x:int,y:int):
