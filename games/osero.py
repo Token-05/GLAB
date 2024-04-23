@@ -3,23 +3,25 @@ import random
 class boards:
 
     def __init__(self):
+        '''
+        frame : 盤面の縁を表すステータス
+        air : 何も置かれていないことを表すステータス
+        pieces_status : 2種類の駒のステータス
+        board : 盤面の状況
+        turn : どちらのターンかを表すステータス
+        dir : 走査方向に対応する単位ベクトル、全8方向
+        ---
+        '''
 
         self.frame = "×"
         self.air = "."
         self.pieces_status = {0:"○", 1:"●"}
 
-        """
-        修正前
-        self.board = [[self.frame if i in [0,9] or j in [0,9] else self.air for i in range(10)] for j in range(10)]
-
-        修正後
-        ↓
-        """
         self.board = []
         for i in range(10):
             tentative = []
             for j in range(10):
-                if i in [0,9] or j in [0,9]:
+                if i in (0,9) or j in (0,9):
                     tentative.append(self.frame)
                 else:
                     tentative.append(self.air)
@@ -73,7 +75,7 @@ class boards:
         swapable : ひっくり返し可能な座標
         '''
         next = self.board[x][y]
-        if next not in ("×","."):
+        if next not in (self.frame,self.air):
             if self.pieces_status[self.turn] == next:
                 return swapable
             else:
@@ -120,7 +122,10 @@ class boards:
         0 : 配置不可能
         '''
         swapable_list = self.check_radiation(x,y)
-        return 1 if swapable_list and self.board[x][y] is self.air else 0
+        if swapable_list and self.board[x][y] == self.air:
+            return 1  
+        else:
+            return 0
     
     def check_bord(self):
         '''
@@ -132,15 +137,21 @@ class boards:
         white : 白の駒の数
         black : 黒の駒の数
         '''
-        hint,air_exists = [],False
-        white, black = 0, 0
+        hint = []
+        air_exists = False
+        white = 0
+        black = 0
 
         for i,col in enumerate(self.board[1:9]):
             for j,d in enumerate(col[1:9]):
-                if self.setable(i+1,j+1) : hint.append((j,i))
-                if d == self.air : air_exists = True
-                elif d == self.pieces_status[0] : black+=1
-                elif d == self.pieces_status[1] : white+=1
+                if self.setable(i+1,j+1):
+                    hint.append((j,i))
+                if d == self.air:
+                    air_exists = True
+                elif d == self.pieces_status[0]:
+                    black+=1
+                elif d == self.pieces_status[1]:
+                    white+=1
 
         random.shuffle(hint)
         return hint,air_exists,black,white
