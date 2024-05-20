@@ -7,4 +7,7 @@
   - [ ] : Creating an AI for evaluation
 
 - `games/mankara.py`
+  - [x] : debugging
+
+- `games/poker.py`
   - [ ] : debugging
