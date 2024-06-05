@@ -2,15 +2,17 @@ import random
 
 class Cards:
 
+    # スート
     suit = ['♤','♡','♢','♧']
+    # 数
     number = ['A','K','Q','J','10','9','8','7','6','5','4','3','2']
 
     def __init__(self):
         pass
     
-    def gen_card_set(self):
+    def __call__(self):
         '''
-        山札の作成
+        クラスインスタンスを呼び出し時、山札の作成
         '''
         cards = [s+n for s in self.suit for n in self.number]
         cards_shuffled = random.sample(cards,len(cards))
@@ -23,8 +25,7 @@ class Board:
         cards : Cardsクラス
         users : ユーザーの数
         '''
-        self.deck = cards.gen_card_set()
-        self.discard = []
+        self.deck = cards()
         self.users_list = []
         self.users = users
 
@@ -42,7 +43,7 @@ class Board:
             self.users_list[turn][c] = None 
         self.users_list[turn] = list(filter(None, self.users_list[turn]))
 
-    def draw_from_deck(self,del_sheets) -> list:
+    def draw_from_deck(self,del_sheets):
         '''
         山札からカードを引く
         '''
@@ -56,7 +57,7 @@ class Board:
         '''
         self.users_list[turn].extend(get_cards)
 
-    def show_hands_all(self) -> list[list]:
+    def show_hands_all(self):
         '''
         全員の手札を返す
         '''
@@ -64,6 +65,7 @@ class Board:
 
 class Role:
 
+    # ランク（強い順）
     ranks = [
         "RF",   # Royal Flush
         "SF",   # Straight Flush
@@ -83,21 +85,20 @@ class Role:
         '''
         self.n_list = Cards().number
         self.st_of_num_dict = {self.n_list[n]: n for n in range(len(self.n_list))}
-        self.tar = target
         self.tar_sorted = sorted(target, key=lambda x: self.st_of_num_dict[x[1:]])
     
     def pairs_suit(self):
         '''
-        スートが揃っているかを確認
+        "スート"が揃っているかを確認
         '''
-        pairs = [t[:1] for t in self.tar]
+        pairs = [t[:1] for t in self.tar_sorted]
         return self.tar_sorted if len(set(pairs))==1 else False
     
     def pairs_nums(self):
         '''
-        数字が揃っているかを確認
+        "数字"が揃っているかを確認
         '''
-        pairs = [t[1:] for t in self.tar]
+        pairs = [t[1:] for t in self.tar_sorted]
         pairs_dict = {}
         
         for t in self.tar_sorted:
@@ -112,9 +113,9 @@ class Role:
     
     def serial_num(self):
         '''
-        数字が連番であるかを確認
+        "数字"が連番であるかを確認
         '''
-        serial = sorted([self.st_of_num_dict[t[1:]] for t in self.tar])
+        serial = sorted([self.st_of_num_dict[t[1:]] for t in self.tar_sorted])
         renban = [serial[x+1] - serial[x] for x in range(len(serial)-1)]
         return self.tar_sorted if set(renban)=={1} else False
     
