@@ -1,13 +1,24 @@
 # distribution-code
 
-## TODO
+こちらはコメントアウト用のブランチです。
 
-- `games/osero.py`
-  - [x] : Creating a CPU
-  - [ ] : Creating an AI for evaluation
+コメントアウト、ドキュメントで２段階を想定しています。
+ドキュメントには使用する関数や難所の解説等を盛り込んでいきたい(理想)
 
-- `games/mankara.py`
-  - [x] : debugging
+## Progress
 
-- `games/poker.py`
-  - [ ] : debugging
+- `games/osero.py` (オセロ)
+  - [x] : comment out
+  - [ ] : document
+
+- `games/mankara.py` (マンカラ)
+  - [ ] : comment out
+  - [ ] : document
+
+- `games/poker.py` (ポーカー)
+  - [ ] : comment out
+  - [ ] : document
+
+- `games-with-pygame` (マインスイーパー)
+  - [ ] : comment out
+  - [ ] : document
