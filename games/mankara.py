@@ -1,4 +1,4 @@
-# マンカラのルール説明 → https://youtu.be/pNZvBn5B3P8?si=um5Scm0egsSTC31I
+# マンカラとは？ → https://youtu.be/pNZvBn5B3P8?si=um5Scm0egsSTC31I
 
 # クラス(hole)を作成 
 class hole:
@@ -15,7 +15,7 @@ class Mankara:
     def __init__(self):
         # インスタンス変数(board)をリストで作成
 
-        """ boaldの作成詳細
+        """ boardの作成詳細
 
         「１ユーザーで６個のポケットと１つのゴールを持っている」状態を
         holeクラスを用いて、リストで作成してみよう！
@@ -69,14 +69,14 @@ class Mankara:
         for p in range(1,piece+1):
             # 選択した位置(chosen) + くりかえしの値(p) のポケットに+1する
             self.board[(chosen+p)%14].num += 1
-            # もし(先ほどの)選択したポケットがゴールだったら
-            if self.board[(chosen+p)%14].goal : 
-                # 1 を戻り値で返す
-                return 1
-            # そうでなければ
-            else : 
-                # 0 を戻り値で返す
-                return 0
+        # もし(先ほどの)選択したポケットがゴールだったら
+        if self.board[(chosen+p)%14].goal : 
+            # 1 を戻り値で返す
+            return 1
+        # そうでなければ
+        else : 
+            # 0 を戻り値で返す
+            return 0
     
     # 対戦相手(CPU)が取る石を選択するメソッド(CPU)を作成 -> 引数scopeをrange型で設定
     def CPU(self,scope:range):
@@ -87,20 +87,18 @@ class Mankara:
     
     # ユーザーの勝敗を判断するメソッド(judge)を作成
     def judge(self):
-        # 0~6番ポケットの石の数を、それぞれユーザーのリスト(A)へ格納 
-        A = [hole.num for hole in self.board[0:6]]
-        # 7~13番ポケットの石の数をCPUのリスト(B)へ格納
-        B = [hole.num for hole in self.board[7:13]]
-        """ リファクタver
+
         # 空のリスト(A, B)を作成する
         A, B = [], []
-
-        for hole in self.boald[0:6]:
+        # 0~6番ポケットのオブジェクト(board)を変数に入れてくりかえす
+        for hole in self.board[0:6]:
+            # リスト(A)にオブジェクト(board)の石の数を追加する
             A.append(hole.num)
-
-        for hole in self.boald[7:13]:
+        # 7~13番ポケットのオブジェクト(board)を変数に入れてくりかえす
+        for hole in self.board[7:13]:
+            # リスト(B)にオブジェクト(board)の石の数を追加する
             B.append(hole.num)
-        """
+
         # リスト(A)の合計値が0だったら (ユーザーのポケットが全て空だったら)
         if sum(A) == 0:
             # Aの勝利メッセージを戻り値で返す -> "win A !!"
@@ -120,10 +118,28 @@ def main():
     # クラス(Mankara)をオブジェクト(変数m)に代入
     m = Mankara()
 
-    # 最初のメッセージを出力("\n先攻はあなた(A)です、CPU(B)は後攻です")
-    print("\n先攻はあなた(A)です、CPU(B)は後攻です")
-    # 最初のメッセージを出力("あなたが操作できるのは#1〜#6の中だけです")
-    print("あなたが操作できるのは#1〜#6の中だけです")
+    # メッセージを出力 -> ゲーム説明のためこちらで用意
+    print("""
+<ルール説明>
+まずは、マンカラの盤面を説明します。
+
+・ポケットには４個ずつ石があり、[#1~#6]があなた(A)の陣地、[#8~#13]がCPU(B)の陣地です
+・この中で、右側(A), 左側(B)がゴールポケットです。
+・先攻はあなた(A)、後攻はCPU(B)です
+
+
+ここから、マンカラのルールを説明します。
+
+・プレイヤーは陣地からポケットを選択し、1つずつ隣のマスに分配していきます。
+    (このときは右回り(反時計回り)に石を置いていきます)
+
+・また、最後の石がゴールに入った場合、ピタリ賞的な意味で、
+    もう一度ポケットの石を配置することができます。
+
+最後に、勝利条件は【自分の全ての陣地(#1~#6)から石が無くなる】ことです。
+
+それでは、ゲーム開始です！
+        """)
 
     # ずっとくりかえす
     while True:

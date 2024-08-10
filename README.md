@@ -12,7 +12,7 @@
   - [ ] : document
 
 - `games/mankara.py` (マンカラ)
-  - [ ] : comment out
+  - [x] : comment out
   - [ ] : document
 
 - `games/poker.py` (ポーカー)
