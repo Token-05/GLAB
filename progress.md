@@ -9,8 +9,8 @@
 ## Progress
 
 - `games/osero.py` (オセロ)
-  - [ ] : refactoring
-  - [ ] : comment out
+  - [x] : refactoring
+  - [x] : comment out
   - [ ] : document
 
 - `games/mankara.py` (マンカラ)
