@@ -24,7 +24,8 @@
   - [ ] : document
 
 - `games/mankara.py`
-  - [x] : debugging
+  - [x] : refactoring
+  - [x] : comment out
 
 - `games/poker.py` (ポーカー)
   - [x] : refactoring
