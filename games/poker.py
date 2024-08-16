@@ -1,71 +1,110 @@
+# randomライブラリをインポート
 import random
 
+# クラス(Cards)を作成
 class Cards:
 
-    # スート
+    # トランプの絵柄を表すリスト(suit)に ['♤','♡','♢','♧'] を代入
     suit = ['♤','♡','♢','♧']
-    # 数
+    # トランプの数字を表すリスト(number)に ['A','K','Q','J','10','9','8','7','6','5','4','3','2'] を代入
     number = ['A','K','Q','J','10','9','8','7','6','5','4','3','2']
 
+    # コンストラクタを生成 -> 義務的なもの
     def __init__(self):
+        # 何も行わない
         pass
     
+    # 特殊メソッド(__call__)を定義
     def __call__(self):
         '''
         クラスインスタンスを呼び出し時、山札の作成
         '''
-        cards = [s+n for s in self.suit for n in self.number]
+        # トランプのカードを表すリスト(cards)を作成する
+        cards = []
+        # 絵柄リスト(suit)を変数sに入れてくりかえす
+        for s in self.suit:
+            # 数字リスト(number)を変数(n)に入れてくりかえす
+            for n in self.number:
+                # カードリスト(cards)に(s + n)を追加する
+                cards.append(s + n)
+        # シャッフルされたカードリスト(cards_shuffled)を作成する
+        # -> 関数(random.sample)を用いて、リスト(cards)の値から同じ要素数を持つシャッフルされたリストを作成しよう
         cards_shuffled = random.sample(cards,len(cards))
+        # リスト(cards_shuffled)を戻り値として返す
         return cards_shuffled
 
+# クラス(Board)を作成
 class Board:
 
-    def __init__(self, cards:Cards, users:int):
+    # コンストラクタを生成 -> 引数(cards, player_num)をCards型, int型で設定
+    def __init__(self, cards:Cards, player_num:int):
         '''
         cards : Cardsクラス
-        users : ユーザーの数
+        player_num : プレイヤーの数
         '''
+        # リスト(cards)を山札を表すインスタンス変数(deck)に設定
         self.deck = cards()
-        self.users_list = []
-        self.users = users
+        # プレイヤーの手札を表すリスト(player_cards)を作成
+        self.player_cards = []
+        # プレイヤーの人数を表す引数(player_num)をインスタンス変数に設定
+        self.player_num = player_num
 
-    def deal_cards(self,dtb_sheets:int):
-        '''
-        山札からカードを配布
-        '''
-        self.users_list = [self.draw_from_deck(dtb_sheets) for _ in range(self.users)]
-    
-    def trash_cards(self,del_cards:list[int],turn:int):
-        '''
-        手札から任意のカードを捨てる
-        '''
-        for c in del_cards:
-            self.users_list[turn][c] = None 
-        self.users_list[turn] = list(filter(None, self.users_list[turn]))
-
-    def draw_from_deck(self,del_sheets):
+    # 山札からカードを引くメソッド(draw_from_deck)を作成 -> 引数(cards_num)をint型で設定
+    def draw_from_deck(self,cards_num:int):
         '''
         山札からカードを引く
         '''
-        get_sheets = self.deck[-del_sheets:]
-        del self.deck[-del_sheets:]
-        return get_sheets
+        # 新たなリスト(drawn_deck)を作成し、山札リスト(deck)の末尾から引数(cards_num)枚分のカードを取得
+        drawn_deck = self.deck[-cards_num:]
+        # 取得したカード(cards_num)の枚数分、山札リスト(deck)の末尾から削除
+        del self.deck[-cards_num:]
+        # カードが引かれた山札リスト(drawn_deck)を返す
+        return drawn_deck
+
+    # プレイヤーにカードを配布するメソッド(deal_cards)を作成 -> 引数(cards_num)をint型で設定
+    def deal_cards(self,cards_num:int):
+        '''
+        山札からカードを配布
+        '''
+        # プレイヤーの人数分(player_num)だけ、変数(_)に入れてくりかえす
+        for _ in range(self.player_num):
+            # リスト(player_cards)に山札から引いたカードを追加 -> (cards_num)枚分追加しよう
+            # ※(このときplayer_cardsは、プレイヤーごとのカードリストとして、二次元配列になるよ！)
+            self.player_cards.append(self.draw_from_deck(cards_num))
     
+    # 手札に任意のカードを追加するメソッド(add_cards)を作成 -> 引数(get_cards, turn)をlist型,int型で設定
     def add_cards(self,get_cards:list,turn:int):
         '''
         手札に任意のカードを追加
         '''
-        self.users_list[turn].extend(get_cards)
+        # 現在ターンのプレイヤー手札(player_cards[turn])に任意のカードを表す引数(get_cards)を追加
+        self.player_cards[turn].extend(get_cards)
 
-    def show_hands_all(self):
+    # 手札から任意のカードを捨てるメソッド(trash_cards)を作成 -> 引数(del_cards, turn)をlist[int]型, int型で設定
+    def trash_cards(self,del_cards:list[int],turn:int):
+        '''
+        手札から任意のカードを捨てる
+        '''
+        # 捨てたいカードの引数(del_cards)を変数(c)に入れてくりかえす
+        for c in del_cards:
+            # プレイヤー手札(player_cards[現在ターン][c])をNoneに設定 -> 指定したカードを捨てる
+            self.player_cards[turn][c] = None 
+        # 現在ターンのプレイヤー手札を、捨てられたカード(None)が取り除かれたものにする -> 再代入しよう
+        # filter関数を用いると、リストから指定した値の要素を取り除くことができるよ！
+        self.player_cards[turn] = list(filter(None, self.player_cards[turn]))
+
+    # 全員の手札を表示するメソッド(open_player_cards)を作成
+    def open_player_cards(self):
         '''
         全員の手札を返す
         '''
-        return self.users_list
+        # プレイヤー手札(player_cards)を戻り値として返す
+        return self.player_cards
 
+# クラス(Role)を作成
 class Role:
 
-    # ランク（強い順）
+    # @@ ポーカーの役を表すリスト(ranks)を作成
     ranks = [
         "RF",   # Royal Flush
         "SF",   # Straight Flush
@@ -77,38 +116,81 @@ class Role:
         "2P",   # Two Pair
         "P",    # Pair
         "HC"    # High Card
-    ]
+    ] # @@
 
+    # コンストラクタを生成 -> 引数(target)をlist[str]型で設定
     def __init__(self, target:list[str]):
         '''
         target : 役を確認する対象のカードリスト
         '''
+        # Cardクラス変数(number)を変数(n_list)に代入する
         self.n_list = Cards().number
-        self.st_of_num_dict = {self.n_list[n]: n for n in range(len(self.n_list))}
-        self.tar_sorted = sorted(target, key=lambda x: self.st_of_num_dict[x[1:]])
-    
+        # 役を確認するために用いる辞書(st_of_num_dict)を作成
+        self.st_of_num_dict = {}
+        # 変数(self.n_list)の要素数分だけ、変数(n)をくりかえす
+        for n in range(len(self.n_list)):
+            # 辞書(st_of_num_dict)にキー(n_list)と値(n)を設定する
+            self.st_of_num_dict[self.n_list[n]] = n 
+
+        # 一時的な関数(get_sort_key)を作成 -> 引数(card)をstr型として設定
+        def get_sort_key(card:str):
+            # 辞書(st_of_num_dict)のキーに引数(card)の2文字目以降を指定し、戻り値として返す
+            return self.st_of_num_dict[card[1:]]
+
+        # 役を確認したいカードリスト(target)の特定要素で(get_sort_key) 昇順に並び替え、新たなリスト(tar_sorted)に代入
+        # -> sorted関数(対象リスト, (対象要素))を用いてみよう！
+        self.tar_sorted = sorted(target, key=get_sort_key)
+
+    # 絵柄が揃っているか確認するメソッド(pairs_suit)を作成
     def pairs_suit(self):
         '''
         "スート"が揃っているかを確認
         '''
-        pairs = [t[:1] for t in self.tar_sorted]
-        return self.tar_sorted if len(set(pairs))==1 else False
+        # 比較する絵柄リスト(pairs)を作成
+        pairs = []
+        # 確認したい役リスト(tar_sorted)を変数(t)に入れてくりかえす
+        for t in self.tar_sorted:
+            # リスト(pairs)に変数(t)の1文字目(絵柄)を追加する -> t[:1]と参照しよう！
+            pairs.append(t[:1])
+
+        # 比較する絵柄リスト(pairs)の[重複を除いた]要素数が １ だったら
+        if len(set(pairs)) == 1:
+            # リスト(tar_sorted)を戻り値として返す
+            return self.tar_sorted
+        # そうでなければ
+        else:
+            # False を戻り値として返す
+            return False
     
+    # 数字が揃っているか確認するメソッド(pairs_num)を作成
     def pairs_nums(self):
         '''
         "数字"が揃っているかを確認
         '''
-        pairs = [t[1:] for t in self.tar_sorted]
+        # 比較する数字リスト(pairs)を作成
+        pairs = []
+        # 数字の出現回数を表す辞書(pairs_dict)を作成
         pairs_dict = {}
-        
+
+        # 確認したい役リスト(tar_sorted)を変数(t)に入れてくりかえす
         for t in self.tar_sorted:
+            # リスト(pairs)に変数(t)の2文字目以降(数字)を追加する -> t[1:]と参照しよう！
+            pairs.append(t[1:])
+            
+            # もし辞書(pairs_dict)に変数(t)の2文字目以降(数字)が含まれていたら
             if t[1:] in pairs_dict:
+                # 辞書(pairs_dict)のキー(t[1:])部分を +1する
                 pairs_dict[t[1:]] += 1
+            # そうでなければ
             else:
+                # 辞書(pairs_dict)のキー(t[1:])部分を 1にする
                 pairs_dict[t[1:]] = 1
         
+        # 辞書(pairs_dict)のすべてのキー(.items)と値をの特定要素(key=lambda x:x[1] -> 各タプルの2文字目(カードの数字))を基準に、降順で並び替え、新たなリスト(pairs_sorted_list)に代入
+        # -> sorted関数(対象リスト, (対象要素), (降順オプション))を用いてみよう！
         pairs_sorted_list = sorted(pairs_dict.items(), key=lambda x:x[1], reverse=True)
         
+        # 並び替えられた、確認したい役リスト(tar_sorted)と数字リスト(pairs_sorted_list)を戻り値として返す
         return self.tar_sorted, pairs_sorted_list
     
     def serial_num(self):
@@ -160,19 +242,19 @@ class Role:
 
 def main():
 
-    users = int(input("人数を入力してください："))
+    player_num = int(input("人数を入力してください："))
     num_of_times = 0
 
     cards = Cards()
-    board = Board(cards,users)
+    board = Board(cards,player_num)
 
     board.deal_cards(5)
 
-    while num_of_times != users*2:
+    while num_of_times != player_num*2:
 
-        turn = num_of_times % users
+        turn = num_of_times % player_num
 
-        for idx, hand in enumerate(board.show_hands_all()):
+        for idx, hand in enumerate(board.open_player_cards()):
             print(f"Player {idx + 1}: {' '.join(hand)}")
 
         del_cards = list(map(int,input(f"\nPlayer {turn + 1}: どれを捨てる？\n").split()))
@@ -185,7 +267,7 @@ def main():
 
         num_of_times += 1
     
-    result = map(Role, board.show_hands_all())
+    result = map(Role, board.open_player_cards())
     for idx, r in enumerate(result):
         print(f"\nPlayer {idx + 1} の役: {r.role_judge()}")
 
