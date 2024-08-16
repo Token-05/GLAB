@@ -23,7 +23,7 @@
   - [x] : comment out
   - [ ] : document
 
-- `games/mankara.py`
+- `games/mankara.py` (マンカラ)
   - [x] : refactoring
   - [x] : comment out
 
