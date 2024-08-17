@@ -23,12 +23,13 @@
   - [x] : comment out
   - [ ] : document
 
-- `games/mankara.py`
-  - [x] : debugging
+- `games/mankara.py` (マンカラ)
+  - [x] : refactoring
+  - [x] : comment out
 
 - `games/poker.py` (ポーカー)
-  - [ ] : refactoring
-  - [ ] : comment out
+  - [x] : refactoring
+  - [x] : comment out
   - [ ] : document
 
 - `games-with-pygame` (マインスイーパー)
