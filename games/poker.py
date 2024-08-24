@@ -322,7 +322,7 @@ def main():
         # 現在ターンを示す変数(turn)に変数(turn_count)プレイヤー人数(player_num)の余りを代入する
         turn = turn_count % player_num
 
-        # 手札を標示するメソッド(open_player_cards)を呼び出し、要素番号(idx)と値(hand)をそれぞれくりかえす
+        # 手札を表示するメソッド(open_player_cards)を呼び出し、要素番号(idx)と値(hand)をそれぞれくりかえす
         # -> enumerate関数を用いてみよう！
         for idx, hand in enumerate(board.open_player_cards()):
             # 文字列を表示(f"Player {idx + 1}: {' '.join(hand)}")
