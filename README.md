@@ -30,6 +30,7 @@
 - `games/poker.py` (ポーカー)
   - [x] : refactoring
   - [x] : comment out
+  - [ ] : update
   - [ ] : document
 
 - `games-with-pygame` (マインスイーパー)
