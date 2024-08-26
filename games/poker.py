@@ -77,6 +77,8 @@ class Board:
         '''
         手札に任意のカードを追加
         '''
+        # 文字列(f"Player {turn + 1}: 山札から{get_cards}を引きました\n")を出力
+        print(f"Player {turn + 1}: 山札から{get_cards}を引きました\n")
         # 現在ターンのプレイヤー手札(player_cards[turn])に任意のカードを表す引数(get_cards)を追加
         self.player_cards[turn].extend(get_cards)
 
@@ -87,6 +89,8 @@ class Board:
         '''
         # 捨てたいカードの引数(del_cards)を変数(c)に入れてくりかえす
         for c in del_cards:
+            # 文字列(f"\nPlayer {turn + 1}: ['{self.player_cards[turn][c]}']を捨てました")を出力
+            print(f"\nPlayer {turn + 1}: ['{self.player_cards[turn][c]}']を捨てました")
             # プレイヤー手札(player_cards[現在ターン][c])をNoneに設定 -> 指定したカードを捨てる
             self.player_cards[turn][c] = None 
         # 現在ターンのプレイヤー手札を、捨てられたカード(None)が取り除かれたものにする -> 再代入しよう
@@ -106,16 +110,16 @@ class Role:
 
     # @@ ポーカーの役を表すリスト(ranks)を作成
     ranks = [
-        "RF",   # Royal Flush
-        "SF",   # Straight Flush
-        "4K",   # Four of a Kind
-        "FH",   # Full House
-        "F",    # Flush
-        "S",    # Straight
-        "3K",   # Three of a Kind
-        "2P",   # Two Pair
-        "OP",   # One Pair
-        "HC"    # High Card
+        "Royal_Flush",
+        "Straight_Flush",
+        "4_Card",
+        "Full_House",
+        "Flush",
+        "Straight",
+        "3_Card",
+        "2_Pair",
+        "1_Pair",
+        "High_Card"
     ] # @@
 
     # コンストラクタを生成 -> 引数(target)をlist[str]型で設定
@@ -247,16 +251,16 @@ class Role:
             if sn:
                 # 変数(sn)の[0][1:]が'A'だったら -> 手札の最初のカード(数字部分)がAだったら(snは降順で並んでいるので、[A,K,Q,J,10]が判定できる)
                 if sn[0][1:] == 'A':
-                    # リスト(roles)に'RF'を追加する
-                    roles.append('RF')
+                    # リスト(roles)に'Royal_Flush'を追加する
+                    roles.append('Royal_Flush')
                 # そうでなければ -> [J,10,9,8,7]などを判定
                 else: 
-                    # リスト(roles)に'SF'を追加する
-                    roles.append('SF')
+                    # リスト(roles)に'Straight_Flush'を追加する
+                    roles.append('Straight_Flush')
             # そうでなければ -> 絵柄のみが揃っていたら
             else:
-                # リスト(roles)に'F'を追加する
-                roles.append('F')
+                # リスト(roles)に'Flush'を追加する
+                roles.append('Flush')
 
         # 変数(pn)がTrueだったら -> 数字が揃っていたら
         if pn:
@@ -264,35 +268,35 @@ class Role:
             if len(pn_list) == 2:
                 # リスト(pn_list)の[0][1]が 4 だったら -> 手札に4枚同じカードが存在したら
                 if pn_list[0][1] == 4:
-                    # リスト(roles)に'4K'を追加する
-                    roles.append('4K')
+                    # リスト(roles)に'4_Card'を追加する
+                    roles.append('4_Card')
                 # そうでなければ -> 手札に2枚,3枚同じカードが存在したら ex(A,A,3,3,3)
                 else:
-                    # リスト(roles)に'FH'を追加する
-                    roles.append('FH')
+                    # リスト(roles)に'Full_House'を追加する
+                    roles.append('Full_House')
             # 手札の数字の出現回数を示すリスト(pn_list)の要素数が 3 だったら -> 手札に3種類の異なる数字が含まれていたら
             elif len(pn_list) == 3:
                 # リスト(pn_list)の[0][1]が 3 だったら -> 手札に3枚同じカードが存在したら
                 if pn_list[0][1] == 3:
-                    # リスト(roles)に'3K'を追加する
-                    roles.append('3K')
+                    # リスト(roles)に'3_Card'を追加する
+                    roles.append('3_Card')
                 # そうでなければ -> 手札に2枚,2枚同じカードが存在したら ex(A,A,3,3,7)
                 else:
-                    # リスト(roles)に'2P'を追加する
-                    roles.append('2P')
+                    # リスト(roles)に'2_Pair'を追加する
+                    roles.append('2_Pair')
             # 手札の数字の出現回数を示すリスト(pn_list)の要素数が 4 だったら -> 手札に4種類の異なる数字が含まれていたら
             elif len(pn_list) == 4:
-                # リスト(roles)に'OP'を追加する
-                roles.append('OP')
+                # リスト(roles)に'1_Pair'を追加する
+                roles.append('1_Pair')
             # そうでなければ -> 手札のカードがすべて異なっていたら 
             else:
-                # リスト(roles)に'HC'を追加する
-                roles.append('HC')
+                # リスト(roles)に'High_Card'を追加する
+                roles.append('High_Card')
 
         # 変数(sn)がTrueだったら -> 数字が連番だったら
         if sn:
-            # リスト(roles)に'S'を追加する
-            roles.append('S')
+            # リスト(roles)に'Straight'を追加する
+            roles.append('Straight')
 
         # リスト(roles)を役の強さ(key=lambda x: self.ranks.index(x))を基準に並び替える
         #  -> リスト自体を変更するsort関数(対象要素)を用いてみよう！
@@ -328,8 +332,8 @@ def main():
             # 文字列を表示(f"Player {idx + 1}: {' '.join(hand)}")
             print(f"Player {idx + 1}: {' '.join(hand)}")
 
-        # 捨てるカードリスト(del_cards)に [list(map(int,input(f"\nPlayer {turn + 1}: どれを捨てますか？\n").split()))] と代入する
-        del_cards = list(map(int,input(f"\nPlayer {turn + 1}: どれを捨てますか？\n").split()))
+        # 捨てるカードリスト(del_cards)に [list(map(int,input(f"\nPlayer {turn + 1}: どのカードを捨てますか？ 要素番号で指定してください\n").split()))] と代入する
+        del_cards = list(map(int,input(f"\nPlayer {turn + 1}: どのカードを捨てますか？ 要素番号で指定してください\n").split()))
         # もしリスト(del_cards)が空になったら
         if not del_cards:
             # 次に進む
@@ -341,7 +345,6 @@ def main():
         get_cards = board.draw_from_deck(len(del_cards))
         # カードを手札に加えるメソッド(board.add_cards(get_cards,turn))を呼び出す
         board.add_cards(get_cards,turn)
-
         # turn_countを +1 する
         turn_count += 1
     
