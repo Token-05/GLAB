@@ -33,7 +33,7 @@ BTN_STATE = {'pressed': 0, 'not_pressed': 1, 'flagged': 2}
 
 def create_maps(level):
     maps = [[{'map': MAP_STATE['space'], 'btn': BTN_STATE['not_pressed']} for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
-    bomb_count = int(GRID_WIDTH * GRID_HEIGHT * 0.05) + level * 5
+    bomb_count = int(GRID_WIDTH * GRID_HEIGHT * 0.1) + level * 5
 
     while bomb_count > 0:
         dx, dy = randint(0, GRID_WIDTH - 1), randint(0, GRID_HEIGHT - 1)
