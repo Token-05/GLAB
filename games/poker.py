@@ -302,10 +302,17 @@ class Role:
         return roles[0]
 
 # ゲームを実行する関数(main)を作成
-def main():
+def main(mode = 'test'):
 
-    # 変数(player_num)にシェルから文字列("人数を入力してください：")を入力させる
-    player_num = int(input("人数を入力してください："))
+    # テストモードなら
+    if mode == 'test':
+        # 変数(player_num)にシェルから文字列("人数を入力してください：")を入力させる
+        player_num = int(input("人数を入力してください："))
+    # 自作（今回はIchi）モードなら
+    elif mode == 'Ichi':
+        # player_num は3に固定
+        player_num = 3
+
     # ターンをカウントする変数(turn_count)を作成 -> 初期値は0
     turn_count = 0
 
@@ -322,14 +329,24 @@ def main():
         # 現在ターンを示す変数(turn)に変数(turn_count)プレイヤー人数(player_num)の余りを代入する
         turn = turn_count % player_num
 
-        # 手札を標示するメソッド(open_player_cards)を呼び出し、要素番号(idx)と値(hand)をそれぞれくりかえす
-        # -> enumerate関数を用いてみよう！
-        for idx, hand in enumerate(board.open_player_cards()):
-            # 文字列を表示(f"Player {idx + 1}: {' '.join(hand)}")
-            print(f"Player {idx + 1}: {' '.join(hand)}")
+        # test modeの場合
+        if mode == 'test':
+            # 手札を標示するメソッド(open_player_cards)を呼び出し、要素番号(idx)と値(hand)をそれぞれくりかえす
+            # -> enumerate関数を用いてみよう！
+            for idx, hand in enumerate(board.open_player_cards()):
+                # 文字列を表示(f"Player {idx + 1}: {' '.join(hand)}")
+                print(f"Player {idx + 1}: {' '.join(hand)}")
 
-        # 捨てるカードリスト(del_cards)に [list(map(int,input(f"\nPlayer {turn + 1}: どれを捨てますか？\n").split()))] と代入する
-        del_cards = list(map(int,input(f"\nPlayer {turn + 1}: どれを捨てますか？\n").split()))
+            # 捨てるカードリスト(del_cards)に [list(map(int,input(f"\nPlayer {turn + 1}: どれを捨てますか？\n").split()))] と代入する
+            del_cards = list(map(int,input(f"\nPlayer {turn + 1}: どれを捨てますか？\n").split()))
+        
+        # 自作 modeの場合
+        elif mode == 'Ichi':
+            # 捨てるカードリスト(del_cards)に [list(map(int,input(f"\nあなたのカードです、どれを捨てますか？\n").split()))] と代入する
+            del_cards = list(map(int,input(
+                f"\nあなたのカードです、どれを捨てますか？先頭からの要素を空白で区切って入力してください\nあなた: {' '.join(board.open_player_cards()[0])}\n")
+                .split()))      
+        
         # もしリスト(del_cards)が空になったら
         if not del_cards:
             # 次に進む
@@ -355,4 +372,6 @@ def main():
 
 # @@ Pythonファイルが直接実行された場合にのみ処理を実行 -> 義務的なものなのでこちらで用意
 if __name__ == "__main__":
-    main() # @@
+    # TODO: 追加、Ichiモード
+    mode = 'Ichi'
+    main(mode) # @@
