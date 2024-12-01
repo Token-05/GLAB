@@ -7,6 +7,8 @@ import random
 
 - Board: ボードを管理するクラス、動かせないミノとボードに関する情報を持つ
 - MINO: ミノを管理するクラス、動くミノについての情報を持つ
+
+- メソッドの先頭に'_'がある場合、そのメソッドはクラス内でしか使わない
 """
 
 class Board:
@@ -34,7 +36,7 @@ class Board:
             # 縦方向にも同じく追加
             self.board.append(temp)
     
-    def add_mino(self, mino_class):
+    def add_mino(self, mino_class: "MINO"):
         """
         動かせなくなったミノをボードに追加
 
@@ -122,7 +124,7 @@ class MINO:
         }
     }
     
-    def __init__(self, shape, x, y):
+    def __init__(self, shape: str, x: int, y: int):
         """
         形状とx,y座標をそれぞれ変数として定義
 
@@ -135,12 +137,12 @@ class MINO:
         self.x = x
         self.y = y
 
-    def move(self, board, dx, dy):
+    def move(self, board: "Board", dx: int, dy: int):
         """
         ミノを移動
 
         Args:
-            board (Board): ボードクラス
+            board (Board): ボードインスタンス
             dx (int): x方向の移動量
             dy (int): y方向の移動量
         """
@@ -149,24 +151,24 @@ class MINO:
         # 枠外判定もちゃんとするよ
         self._out_of_box_correction()
 
-    def rotate(self, board):
+    def rotate(self, board: "Board"):
         """
         ミノを回転（時計回り）
 
         Args:
-            board (Board): ボードクラス
+            board (Board): ボードインスタンス
         """
         # 回転時に重なりがないかをチェックし、なければ回転
         self.mino['shape'] = self._rotational_overlap_correction(board)
         # 枠外判定〜
         self._out_of_box_correction()
     
-    def _movement_overlap_correction(self, board, dx, dy):
+    def _movement_overlap_correction(self, board: "Board", dx: int, dy: int):
         """
         移動時における衝突チェック
 
         Args:
-            board (Board): ボードクラス
+            board (Board): ボードインスタンス
             dx (int): x方向の移動量
             dy (int): y方向の移動量
 
@@ -182,26 +184,26 @@ class MINO:
         for i, row in enumerate(self.mino['shape']):
             # ミノ形状の横方向について繰り返す
             for j, cell in enumerate(row):
-                # もし領域内がセルであればいかに続く
+                # もし走査領域内がセルであればいかに続く
                 if cell:
                     # ボードの範囲内であることを確認できなければ更新せずに返す
                     if not (0 <= temp_y + i < len(board.board) and 0 <= temp_x + j < len(board.board[0])):
                         return self.x, self.y
                     # すでにブロックが存在するなら更新せずに返す
                     if board.board[temp_y + i][temp_x + j] != BLACK:
-                        # dyの更新があればフラグを立てておく ⇨ これがないとブロックが落ちてこないぜー
+                        # dyの更新があればフラグを立てておく ⇨ これがないとブロックが落ちてこない
                         if dy > 0:
                             FLAG = True
                         return self.x, self.y
         # 特に何もなければ更新して返す
         return temp_x, temp_y
 
-    def _rotational_overlap_correction(self, board):
+    def _rotational_overlap_correction(self, board: "Board"):
         """
         回転時における衝突チェック
 
         Args:
-            board (Board): 親の顔より見たボードクラス
+            board (Board): 親の顔より見たボードインスタンス
 
         Returns:
             list: 移動できそうであれば回転して返す
@@ -212,7 +214,7 @@ class MINO:
         for i, row in enumerate(temp):
             # ミノ形状の横方向について繰り返す
             for j, cell in enumerate(row):
-                # もし領域内がセルであればいかに続く
+                # もし走査領域内がセルであればいかに続く
                 if cell:
                     # ボードの範囲内であることを確認できなければ更新せずに返す
                     if not (0 <= self.x + j < len(board.board[0]) and 0 <= self.y + i < len(board.board)):
@@ -253,7 +255,7 @@ class MINO:
         for row_idx, row in enumerate(self.mino['shape']):
             # ミノ形状の横方向について繰り返す
             for col_idx, cell in enumerate(row):
-                # もし領域内がセルであればいかに続く
+                # もし走査領域内がセルであればいかに続く
                 if cell:
                     # セルの描画（ミノクラスに指定された色と座標に気をつける）
                     pygame.draw.rect(
