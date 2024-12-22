@@ -3,7 +3,7 @@ from pygame.locals import *
 import random
 
 """
-# テトリス - 2024/11/23 - T.Ichiyanagi
+# テトリス - 2024/11/23 - T.Ichiyanagi ※コメント済み
 
 - Board: ボードを管理するクラス、動かせないミノとボードに関する情報を持つ
 - MINO: ミノを管理するクラス、動くミノについての情報を持つ
